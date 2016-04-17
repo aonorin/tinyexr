@@ -2292,7 +2292,7 @@ tinfl_status tinfl_decompress(tinfl_decompressor *r,
     if (!(decomp_flags & TINFL_FLAG_USING_NON_WRAPPING_OUTPUT_BUF))
       counter |= (((1U << (8U + (r->m_zhdr0 >> 4))) > 32768U) ||
                   ((out_buf_size_mask + 1) <
-                   (size_t)(1U << (8U + (r->m_zhdr0 >> 4)))));
+                   (size_t)(1ULL << (8U + (r->m_zhdr0 >> 4)))));
     if (counter) {
       TINFL_CR_RETURN_FOREVER(36, TINFL_STATUS_FAILED);
     }
@@ -7758,7 +7758,7 @@ void hufBuildEncTable(
     // Add a bit to all codes in the first list.
     //
 
-    for (int j = m; true; j = hlink[j]) {
+    for (int j = m; ; j = hlink[j]) {
       scode[j]++;
 
       assert(scode[j] <= 58);
@@ -7777,7 +7777,7 @@ void hufBuildEncTable(
     // Add a bit to all codes in the second list
     //
 
-    for (int j = mm; true; j = hlink[j]) {
+    for (int j = mm; ; j = hlink[j]) {
       scode[j]++;
 
       assert(scode[j] <= 58);
@@ -8010,7 +8010,7 @@ bool hufBuildDecTable(const long long *hcode, // i : encoding table
 
       HufDec *pl = hdecod + (c << (HUF_DECBITS - l));
 
-      for (long long i = 1 << (HUF_DECBITS - l); i > 0; i--, pl++) {
+      for (long long i = 1ULL << (HUF_DECBITS - l); i > 0; i--, pl++) {
         if (pl->len || pl->p) {
           //
           // Error: a short code or a long code has
